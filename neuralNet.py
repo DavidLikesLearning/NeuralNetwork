@@ -6,6 +6,12 @@ def dotProd(uno, dos):
 		sum+= i*j
 	return sum
 
+def avgLoss(a,b):
+	tot =0 
+	for i in range(len(a)):
+		tot += a[i] - b[i]
+	return tot/len(a)
+
 def reLu(input):
 	#Rectified Linear Unit, easier derivative than sigmoid
 	return max(0,input) 
@@ -17,6 +23,7 @@ def derReLu(input):
 		return 0
 	else:
 		return .5
+
 
 
 class Neuron:
@@ -55,16 +62,16 @@ class NNet:
 	def fit(self, inVects=[], corrects=[], epochs=1):
 		for _ in range(epochs):
 			for inVect, goal in zip(inVects, corrects):
-				inputVector = [u for u in inVect]
-				acc = self.predict([u for u in inVect])
-				self._learn(inputVector, acc, 0.0625, goal)
+				self._learn([u for u in inVect],
+				 		self.predict([u for u in inVect]),
+				 		0.0625, goal)
 	def predict(self, inVect = []):
 		for i in self.layers:
 			inVect = i.calc(inVect) 
 		return inVect
 	def _learn(self, inputVector, outputVector, step, goal):
-		for i in goal:
-			self.output
+		loss = avgLoss(outputVector, goal)
+		
 
 
 			
