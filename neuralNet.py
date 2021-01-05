@@ -18,6 +18,7 @@ def derReLu(input):
 	else:
 		return .5
 
+
 class Neuron:
 	def __init__(self, nIn=0):
 		self.weights = [(random.random()*2)-1 for _ in range(nIn)]
@@ -35,7 +36,16 @@ class Layer:
 	def calc(self, inVect = []):
 		self.output = [i.calc(inVect) for i in self.neurons]
 		return self.output
-	def learn(self, )
+	def dadRelu(self, prevOutput):
+		return [1] * len(self.neurons)
+	def dzdb(self, prevOutput):
+		return [1] * len(self.neurons)
+	def dzdw(self, prevOutput):
+		return prevOutput
+	def dzda(self,prevOutput): 
+		#the derivative of a linear function multiplying a vector by a matrix with respect to said vector
+		#is the matrix transposed
+		return [[self.neurons[i].weights[j] for i in range(len(self.neurons))] for j in range(len(self.neurons[0].weights))]
 
 class NNet:
 	def __init__(self, neursLayers):
