@@ -7,8 +7,16 @@ def dotProd(uno, dos):
 	return sum
 
 def reLu(input):
-	#Rectified Linear Unit, better derivative than sigmoid
+	#Rectified Linear Unit, easier derivative than sigmoid
 	return max(0,input) 
+
+def derReLu(input):
+	if input > 0:
+		return 1
+	elif input <0:
+		return 0
+	else:
+		return .5
 
 class Neuron:
 	def __init__(self, nIn=0):
