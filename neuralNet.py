@@ -56,9 +56,7 @@ class NNet:
 		for _ in range(epochs):
 			for inVect, goal in zip(inVects, corrects):
 				inputVector = [u for u in inVect]
-				acc = [u for u in inVect]
-				for i in self.layers:
-					acc = i.predict(acc)
+				acc = self.predict([u for u in inVect])
 				self._learn(inputVector, acc, 0.0625, goal)
 	def predict(self, inVect = []):
 		for i in self.layers:
