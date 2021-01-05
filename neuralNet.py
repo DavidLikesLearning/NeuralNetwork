@@ -47,15 +47,26 @@ class Layer:
 		#is the matrix transposed
 		return [[self.neurons[i].weights[j] for i in range(len(self.neurons))] for j in range(len(self.neurons[0].weights))]
 
+
 class NNet:
 	def __init__(self, neursLayers):
 		self.layers = [Layer(neursLayers[i], neursLayers[i-1]) for i in range(len(neursLayers))[1:]]
 		self.nInputs = neursLayers[0]
-		self.output = None
-	def calc(self, inVect = []):
+	def fit(self, inVects=[], corrects=[], epochs=1):
+		for _ in range(epochs):
+			for inVect, goal in zip(inVects, corrects):
+				inputVector = [u for u in inVect]
+				acc = [u for u in inVect]
+				for i in self.layers:
+					acc = i.predict(acc)
+				self._learn(inputVector, acc, 0.0625, goal)
+	def predict(self, inVect = []):
 		for i in self.layers:
 			inVect = i.calc(inVect) 
-		self.output = inVect
-		return self.output
+		return inVect
+	def _learn(self, inputVector, outputVector, step, goal):
+		for i in goal:
+			self.output
+
 
 			
