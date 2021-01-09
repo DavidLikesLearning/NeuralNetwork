@@ -9,12 +9,14 @@ SIGMOID=0
 #be a linear function
 
 def relu(x):
-	return max(0,x)
+	return max(np.zeros(len(x)),x)
+	#no need to worry about vectors thanks to broadcasting
 
 def sig(x):
 	return 1/(1+np.exp(-x))
+	#we love broadcasting
 
-def neuralNetInit(inputs, neuronsInlayers):
+def neuralNetInit(neuronsInlayers):
 	#that neurons in layers will carry a list of the count of neurons in each layer
 	#neuronsInLayers carries tuples throughout, the first member being the neuron count per layer
 	#and the second member to denote the activation function
@@ -25,10 +27,22 @@ def neuralNetInit(inputs, neuronsInlayers):
 		#making the weights matrix0
 		neuralNet['bias'+str(i)] = np.zeros(neuronsInlayers[i+1][0],1)
 		#making bias vectors
-		neuralNet['activation'+str(i)] = neuronsInlayers[i+1][1]
+		neuralNet['act'+str(i)] = neuronsInlayers[i+1][1]
 		#storing preferred activation function
+	neuralNet['nLayers'] = len(neuronsInlayers) #not bad to have the # layers easily available
 	return neuralNet
 
+def forwardFeed(net, inputVec, keepZ=False):
+	acc = inputVec
+	record = [] #will keep track of all computation outputs after weights and biases before activation
+	for i in range(net['nLayers']-1):
+		acc = net['Weight'+str(i)]*acc + net['bias'+str(i)] 
+		record.append(acc)
+		if net['act'+str(i)] == RELU:
+			acc = relu(acc)
+		else:
+			acc = sig(acc)
+	return acc
 
 
 
