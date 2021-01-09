@@ -1,77 +1,34 @@
-import random 
+import random as rnd
+import numpy as np 
+import time
+print("hello world :) . . . watch out")
 
-def dotProd(uno, dos):
-	sum = 0
-	for i,j in zip(uno,dos):
-		sum+= i*j
-	return sum
+RELU=1
+SIGMOID=0
+#choosing sigmoid to be the default because otherwise a neural net of all relu would
+#be a linear function
 
-def avgLoss(a,b):
-	tot =0 
-	for i in range(len(a)):
-		tot += a[i] - b[i]
-	return tot/len(a)
+def relu(x):
+	return max(0,x)
 
-def reLu(input):
-	#Rectified Linear Unit, easier derivative than sigmoid
-	return max(0,input) 
+def sig(x):
+	return 1/(1+np.exp(-x))
 
-def derReLu(input):
-	if input > 0:
-		return 1
-	elif input <0:
-		return 0
-	else:
-		return .5
-
-
-
-class Neuron:
-	def __init__(self, nIn=0):
-		self.weights = [(random.random()*2)-1 for _ in range(nIn)]
-		self.bias = (random.random()*2)-1
-		self.output = None
-	def calc(self, inputs):
-		self.output = reLu(dotProd(inputs, self.weights) + self.bias) 
-		#output is dot product of inputs and weights for neuron + neuron's bias
-		return self.output
-
-class Layer:
-	def __init__(self, nNeur, nIn):
-		self.neurons = [Neuron(nIn) for _ in range(nNeur)]
-		self.output = None
-	def calc(self, inVect = []):
-		self.output = [i.calc(inVect) for i in self.neurons]
-		return self.output
-	def dadRelu(self, prevOutput):
-		return [1] * len(self.neurons)
-	def dzdb(self, prevOutput):
-		return [1] * len(self.neurons)
-	def dzdw(self, prevOutput):
-		return prevOutput
-	def dzda(self,prevOutput): 
-		#the derivative of a linear function multiplying a vector by a matrix with respect to said vector
-		#is the matrix transposed
-		return [[self.neurons[i].weights[j] for i in range(len(self.neurons))] for j in range(len(self.neurons[0].weights))]
+def neuralNetInit(inputs, neuronsInlayers):
+	#that neurons in layers will carry a list of the count of neurons in each layer
+	#neuronsInLayers carries tuples throughout, the first member being the neuron count per layer
+	#and the second member to denote the activation function
+	#e.g.: [(4,0),(5,0),(3,1)]
+	neuralNet = {}
+	for i in range(len(neuronsInLayers)-1):
+		neuralNet['Weight'+str(i)] = np.rnd.randn(neuronsInlayers[i+1][0],neuronsInlayers[i][0])*.00714 #lucky number
+		#making the weights matrix0
+		neuralNet['bias'+str(i)] = np.zeros(neuronsInlayers[i+1][0],1)
+		#making bias vectors
+		neuralNet['activation'+str(i)] = neuronsInlayers[i+1][1]
+		#storing preferred activation function
+	return neuralNet
 
 
-class NNet:
-	def __init__(self, neursLayers):
-		self.layers = [Layer(neursLayers[i], neursLayers[i-1]) for i in range(len(neursLayers))[1:]]
-		self.nInputs = neursLayers[0]
-	def fit(self, inVects=[], corrects=[], epochs=1):
-		for _ in range(epochs):
-			for inVect, goal in zip(inVects, corrects):
-				self._learn([u for u in inVect],
-				 		self.predict([u for u in inVect]),
-				 		0.0625, goal)
-	def predict(self, inVect = []):
-		for i in self.layers:
-			inVect = i.calc(inVect) 
-		return inVect
-	def _learn(self, inputVector, outputVector, step, goal):
-		loss = avgLoss(outputVector, goal)
-		
 
 
-			
